@@ -7,6 +7,7 @@ Created on Thu Nov 16 19:47:50 2017
 import pygame
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
+import math
        
 class Configuration:
     
@@ -71,11 +72,12 @@ class Configuration:
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         glu.gluPerspective(70, (self.screen.get_width()/self.screen.get_height()), 0.1, 100.0)
-
+        
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glLoadIdentity()
         gl.glTranslatef(0.0,0.0, self.parameters['screenPosition'])       
-        
+        gl.glRotatef(-90, 1, 0, 0)
+
     # Getter
     def getParameter(self, parameterKey):
         return self.parameters[parameterKey]    
@@ -146,14 +148,44 @@ class Configuration:
         elif self.event.dict['unicode'] == 'a' or self.event.key == pygame.K_a:
             self.parameters['axes'] = not self.parameters['axes']
             pygame.time.wait(300)
+
+    # Gestion du zoom positif avec les touches
+        elif self.event.key == pygame.K_PAGEUP:
+            gl.glScalef(1.1, 1.1, 1.1)
     
+    # Gestion du zoom négatif avec les touches
+        elif self.event.key == pygame.K_PAGEDOWN:
+            gl.glScalef(1/1.1, 1/1.1, 1/1.1)        
+            
     # Processes the MOUSEBUTTONDOWN event
     def processMouseButtonDownEvent(self):
-        pass
-    
+
+            # Gestion du zoom positif avec la souris 
+        if self.event.type == pygame.MOUSEBUTTONDOWN and self.event.button == 4:
+            gl.glScalef(1.1, 1.1, 1.1)
+        
+            # Gestion du zoom négatif avec la souris 
+        elif self.event.type == pygame.MOUSEBUTTONDOWN and self.event.button == 5:
+            gl.glScalef(1/1.1, 1/1.1, 1/1.1)        
+            
     # Processes the MOUSEMOTION event
     def processMouseMotionEvent(self):
-        pass
+    
+ # On vérifie  si le bouton de gauche de la souris est pressé afin de savoir quelle partie de la boucle exécuter
+        if pygame.mouse.get_pressed()[0] == 1: 
+
+# On utilise gl.Rotatef pour effectuer la rotation selon l'angle donné par le mouvement de la souris selon x ou y
+            gl.glRotatef(self.event.rel[0], 0, 0, 1.0)
+            gl.glRotatef(self.event.rel[1],1.0, 0, 0)
+
+# Suite d'instructions à réaliser si la première condition n'est pas remplie et le bouton droit est pressé           
+        elif pygame.mouse.getpressed()[2] == 1:
+            
+# On utilise gl.Trasnlatef pour effectuer la translation selon l'angle donné par le mouvement de la souris selon x ou y
+             gl.glTranslatef(self.event.rel[0]/50, 0, 0)   
+             gl.glTranslatef(0, 0, -self.event.rel[1]/50)
+         
+         
          
     # Displays on screen and processes events    
     def display(self): 
