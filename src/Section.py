@@ -52,31 +52,46 @@ class Section:
 
     # Defines the vertices and faces 
     def generate(self):
+
+#On commence par définir les sommets
         self.vertices = [ 
-                # Définir ici les sommets
-                [0, 0, 0],
+                
+#                Sommet 1
+                [0, 0, 0 ], 
+                
+                #Sommet 2
                 [0, 0, self.parameters['height']],
+                
+                #Sommet 3
                 [self.parameters['width'], 0, self.parameters['height']],
+                
+                #Sommet 4
                 [self.parameters['width'], 0, 0],
-               
-                [0, self.parameters['thickness'], 0],
-                [0, self.parameters['thickness'], self.parameters['height']],
                 
-               
-                [self.parameters['width'], self.parameters['thickness'], 0],
-                [self.parameters['width'], self.parameters['thickness'],  self.parameters['height']],
-               
+                #Sommet 5
+        		[0,self.parameters['thickness'],0],
                 
+                #Sommet 6
+                [0,self.parameters['thickness'],self.parameters['height']], 
+                
+                #Sommet 7
+                [self.parameters['width'],self.parameters['thickness'],self.parameters['height']],  
+                
+                #Sommet 8
+                [self.parameters['width'],self.parameters['thickness'],0]
                 ]
+
+#On définit maintenant les faces à l'aide de matrices
         self.faces = [
-                # définir ici les faces
-                [0, 3, 2, 1],
-                [1, 2, 7, 5],
-                [4, 6, 7, 5],
-                [0, 3, 6, 4],
-                [0, 4, 5, 1],
-                [3, 6, 7, 2],             
-                ]   
+                [0,3,2,1],#Face1
+                [4,7,6,5],#Face2
+                [3,7,6,2],#Face3
+                [0,4,5,1],#Face4
+                [0,3,7,4],#Face5
+                [1,2,6,5],#Face6
+                
+                ]    
+  
 
     # Checks if the opening can be created for the object x
     def canCreateOpening(self, x):
@@ -90,11 +105,59 @@ class Section:
         
     # Draws the edges
     def drawEdges(self):
-        # A compléter en remplaçant pass par votre code
-        pass           
+       
+        gl.glPushMatrix()
+        
+#On translate les valeurs des position
+        gl.glTranslatef(self.parameters['position'][0],self.parameters['position'][1],self.parameters['position'][2])
+        gl.glRotate(self.parameters['orientation'],0,0,1)
+        
+#On utilise GL_LINE car on on souhaite afficher des lignes
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK,gl.GL_LINE)  
+        
+#A l'aide d'une boucle for, on parcourt les coordonées de tous les sommets de la face puis on trace la ligne correspondante
+        for x in self.faces:
+            gl.glBegin(gl.GL_QUADS)
+#  On précise la couleur du tracé
+            gl.glColor3fv([0, 0, 1])
+            gl.glVertex3fv(self.vertices[x[0]]) 
+            gl.glVertex3fv(self.vertices[x[1]]) 
+            gl.glVertex3fv(self.vertices[x[2]]) 
+            gl.glVertex3fv(self.vertices[x[3]]) 
+            
+            gl.glEnd()
+        gl.glPopMatrix()      
                     
     # Draws the faces
     def draw(self):
-        # A compléter en remplaçant pass par votre code
-        pass
-  
+
+# On ajoute une condition à la fonction "draw" afin qu'elle dessine les faces uniquement si des sommets sont définit
+        if self.parameters['edges']: 
+            
+# Onpermet l'utilisation de la fonction "drawEdges"            
+            self.drawEdges()
+
+#On remanie les instructions précédentes mais pour construire les faces
+        gl.glPushMatrix()
+        gl.glTranslatef(self.parameters['position'][0],self.parameters['position'][1],self.parameters['position'][2])
+        gl.glRotate(self.parameters['orientation'],0,0,1)
+        
+#On utilise GL_FILL car on on souhaite cette fois-ci remplir les faces
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK,gl.GL_FILL)
+        
+        for x in self.faces: 
+            gl.glBegin(gl.GL_QUADS) 
+            
+#  On précise cette fois la couleur de remplissage
+            gl.glColor3fv([0.5, 0.5, 0.5]) 
+            
+            gl.glVertex3fv(self.vertices[x[0]])
+            gl.glVertex3fv(self.vertices[x[1]])
+            gl.glVertex3fv(self.vertices[x[2]])
+            gl.glVertex3fv(self.vertices[x[3]])
+            gl.glEnd()
+        gl.glPopMatrix()
+        
+        
+        
+        

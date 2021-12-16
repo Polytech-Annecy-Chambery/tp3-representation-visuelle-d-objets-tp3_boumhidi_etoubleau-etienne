@@ -44,16 +44,69 @@ class Opening:
         self.parameters[parameterKey] = parameterValue
         return self        
 
-    # Defines the vertices and faces        
     def generate(self):
+
+ #On copie la méthode réalisée précédemment dans le fichier "Section.py"
         self.vertices = [ 
-                # Définir ici les sommets
+                
+#                Sommet 1
+                [0, 0, 0 ], 
+                
+                #Sommet 2
+                [0, 0, self.parameters['height']],
+                
+                #Sommet 3
+                [self.parameters['width'], 0, self.parameters['height']],
+                
+                #Sommet 4
+                [self.parameters['width'], 0, 0],
+                
+                #Sommet 5
+        		[0,self.parameters['thickness'],0],
+                
+                #Sommet 6
+                [0,self.parameters['thickness'],self.parameters['height']], 
+                
+                #Sommet 7
+                [self.parameters['width'],self.parameters['thickness'],self.parameters['height']],  
+                
+                #Sommet 8
+                [self.parameters['width'],self.parameters['thickness'],0]
                 ]
+
+#Ici, on retire les deux premières faces
         self.faces = [
-                # définir ici les faces
-                ]   
+                [3,7,6,2],
+                [0,4,5,1],
+                [0,3,7,4],
+                [1,2,6,5],
+                
+                ]  
         
     # Draws the faces                
     def draw(self):        
-        # A compléter en remplaçant pass par votre code
-        pass
+
+#On remanie les instructions précédentes en retirant le paramètre d'orientation
+        gl.glPushMatrix()
+        gl.glTranslatef(self.parameters['position'][0],self.parameters['position'][1],self.parameters['position'][2])
+
+#On utilise GL_FILL car on on souhaite cette fois-ci remplir les faces
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK,gl.GL_FILL)
+        
+        for x in self.faces: 
+            gl.glBegin(gl.GL_QUADS) 
+            
+#  On précise cette fois la couleur de remplissage
+            gl.glColor3fv([0.5, 0.5, 0.5]) 
+            
+            gl.glVertex3fv(self.vertices[x[0]])
+            gl.glVertex3fv(self.vertices[x[1]])
+            gl.glVertex3fv(self.vertices[x[2]])
+            gl.glVertex3fv(self.vertices[x[3]])
+            gl.glEnd()
+        gl.glPopMatrix() 
+                      
+    
+    
+    
+    

@@ -7,7 +7,6 @@ Created on Thu Nov 16 19:47:50 2017
 import pygame
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
-import math
        
 class Configuration:
     
@@ -179,11 +178,11 @@ class Configuration:
             gl.glRotatef(self.event.rel[1],1.0, 0, 0)
 
 # Suite d'instructions à réaliser si la première condition n'est pas remplie et le bouton droit est pressé           
-        elif pygame.mouse.getpressed()[2] == 1:
+        elif pygame.mouse.get_pressed()[2] == 1:
             
 # On utilise gl.Trasnlatef pour effectuer la translation selon l'angle donné par le mouvement de la souris selon x ou y
-             gl.glTranslatef(self.event.rel[0]/50, 0, 0)   
-             gl.glTranslatef(0, 0, -self.event.rel[1]/50)
+             gl.glTranslatef(self.event.rel[0]/15, 0, 0)   
+             gl.glTranslatef(0, 0, -self.event.rel[1]/15)
          
          
          
